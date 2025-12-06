@@ -4,6 +4,7 @@ import copy
 import gc
 import pprint
 import sys
+import os
 
 # You can import your utility functions, e.g.,
 # from aoc_utils import lcm, manhattan_distance
@@ -11,11 +12,25 @@ import sys
 # Set a higher recursion limit for puzzles that need it
 # sys.setrecursionlimit(2000)
 
-data2 = get_data(day=7, year=2024).splitlines()
+# --- Solution ---
+
+# Fill these in for the day
+DAY = 1
+YEAR = 2025
+
+INPUT_DIR = "input"
+INPUT_FILE = os.path.join(INPUT_DIR, f"day{DAY}.txt")
+
+if not os.path.exists(INPUT_FILE):
+    os.makedirs(INPUT_DIR, exist_ok=True)
+    with open(INPUT_FILE, "w") as f:
+        f.write(get_data(day=DAY, year=YEAR))
+
+with open(INPUT_FILE, "r") as f:
+    data = f.read().splitlines()
 
 # Example data for testing
-data = [
-]
+# data = []
 
 def part_1():
   pass
