@@ -1,5 +1,6 @@
-from functools import reduce
+from functools import reduce, lru_cache
 from math import gcd  
+import math
 from typing import Iterable
 import numpy as np
 
@@ -115,3 +116,23 @@ def list_of_strings_to_2d_nparray_ord(vals):
     """
     array = np.array([np.array([ord(c) for c in l]) for l in vals])
     return array
+
+@lru_cache(maxsize=None)
+def get_factors(n: int) -> list[int]:
+  """
+  Returns a sorted list of all factors for a given integer.
+
+  Parameters:
+  n (int): The integer to factor.
+
+  Returns:
+  list[int]: A sorted list of factors.
+  """
+  # Use a set to automatically handle duplicate factors for perfect squares
+  factors = set()
+  # Iterate from 1 up to the square root of n
+  for i in range(1, int(math.sqrt(n)) + 1):
+    if n % i == 0:
+      factors.add(i)
+      factors.add(n // i)
+  return sorted(list(factors))

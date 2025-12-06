@@ -4,6 +4,7 @@ input/
 
 # Environment variables, which may contain your session token
 .env
+.vscode
 
 # Python cache files
 __pycache__/
