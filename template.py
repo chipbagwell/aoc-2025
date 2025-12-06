@@ -1,5 +1,6 @@
 from aocd import get_data, submit
 from collections import Counter, defaultdict, deque
+from aocd.models import Puzzle
 import copy
 import gc
 import pprint
@@ -18,19 +19,34 @@ import os
 DAY = 1
 YEAR = 2025
 
+puzzle = Puzzle(year=YEAR, day=DAY)
+
 INPUT_DIR = "input"
 INPUT_FILE = os.path.join(INPUT_DIR, f"day{DAY}.txt")
 
 if not os.path.exists(INPUT_FILE):
     os.makedirs(INPUT_DIR, exist_ok=True)
     with open(INPUT_FILE, "w") as f:
-        f.write(get_data(day=DAY, year=YEAR))
+        f.write(puzzle.input_data)
+
+# Save example inputs
+for i, example in enumerate(puzzle.examples):
+    EXAMPLE_FILE = os.path.join(INPUT_DIR, f"day{DAY}_example_{i}.txt")
+    if not os.path.exists(EXAMPLE_FILE):
+        with open(EXAMPLE_FILE, "w") as f:
+            f.write(example.input_data)
+    # Save example answers
+    ANS_FILE = os.path.join(INPUT_DIR, f"day{DAY}_example_{i}.ans")
+    if not os.path.exists(ANS_FILE):
+        with open(ANS_FILE, "w") as f:
+            f.write(f"Part 1: {example.answer_a}\nPart 2: {example.answer_b}\n")
 
 with open(INPUT_FILE, "r") as f:
     data = f.read().splitlines()
 
 # Example data for testing
-# data = []
+# with open(os.path.join(INPUT_DIR, f"day{DAY}_example_0.txt"), "r") as f:
+#     data = f.read().splitlines()
 
 def part_1():
   pass
