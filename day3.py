@@ -16,7 +16,7 @@ import aoc_utils
 # --- Solution ---
 
 # Fill these in for the day
-DAY = 1
+DAY = 3
 YEAR = 2025
 
 puzzle = Puzzle(year=YEAR, day=DAY)
@@ -60,10 +60,40 @@ with open(input_file, "r") as f:
     data = f.read().splitlines()
 
 def part_1():
-  pass
+    sum = 0
+    for l in data:
+        max = 0
+        for i,c in enumerate(l[:-1]):
+            for j,d in enumerate(l[i+1:]):
+                if int(c) * 10 + int(d) > max:
+                    max = int(c) * 10 + int(d)
+        sum += max
+    return sum
 
 def part_2():
-  pass
+    sum = 0
+    for l in data:
+        #print(f"original: {l}")
+        temp = l[0:12]
+        temp_int = int(temp)
+        # For each of the next digits, we need to see if adding them at the end,
+        # and removing a single digit from the original makes a larger number.
+        for i in range(12,len(l)):
+            # i is the next digit to check.
+            #print(f"checking: '{l[i]}' at index {i}")
+            for j in range(0,12):
+                # create new concatenation
+                new_temp = temp[0:j] + temp[j+1:] + l[i]
+                new_temp_int = int(new_temp)
+                #print(temp, new_temp)
+                if new_temp_int > temp_int:
+                    #print(f"selecting: '{new_temp}' at index {i}")
+                    temp_int = new_temp_int
+                    temp = new_temp
+                    break
+        sum += temp_int
+        
+    return sum
 
 answer1 = part_1()
 print(f"Part 1: {answer1}")
