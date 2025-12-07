@@ -41,43 +41,45 @@ for i, example in enumerate(puzzle.examples):
     if not os.path.exists(ANS_FILE):
         with open(ANS_FILE, "w") as f:
             f.write(f"Part 1: {example.answer_a}\nPart 2: {example.answer_b}\n")
-            
+
 # --- Input Handling ---
-use_example = 'test' in sys.argv
+use_example = "test" in sys.argv
 example_to_use = 0
 if use_example:
     try:
         # Check if a specific example number is provided
-        example_to_use = int(sys.argv[sys.argv.index('test') + 1])
+        example_to_use = int(sys.argv[sys.argv.index("test") + 1])
     except (ValueError, IndexError):
-        pass # Default to example 0
+        pass  # Default to example 0
     input_file = os.path.join(INPUT_DIR, f"day{DAY}_example_{example_to_use}.txt")
     print(f"Using example input: {input_file}")
 else:
     input_file = INPUT_FILE
     print(f"Using real input: {input_file}")
-    
+
 with open(input_file, "r") as f:
     data = f.read().splitlines()
 
+
 def part_1():
     sum = 0
-    rs = data[0].split(',')
-    rs = [r.split('-') for r in rs]
-    rs = [range(int(r[0]), int(r[1])+1) for r in rs]
+    rs = data[0].split(",")
+    rs = [r.split("-") for r in rs]
+    rs = [range(int(r[0]), int(r[1]) + 1) for r in rs]
     for r in rs:
         for n in r:
             if len(str(n)) % 2 == 0:
                 half = len(str(n)) // 2
-                if (str(n)[0:half] == str(n)[half:]):
+                if str(n)[0:half] == str(n)[half:]:
                     sum += n
     return sum
 
+
 def part_2():
     sum = 0
-    rs = data[0].split(',')
-    rs = [r.split('-') for r in rs]
-    rs = [range(int(r[0]), int(r[1])+1) for r in rs]
+    rs = data[0].split(",")
+    rs = [r.split("-") for r in rs]
+    rs = [range(int(r[0]), int(r[1]) + 1) for r in rs]
     for r in rs:
         for n in r:
             s = str(n)
@@ -87,10 +89,11 @@ def part_2():
                     break
     return sum
 
+
 answer1 = part_1()
 print(f"Part 1: {answer1}")
 answer2 = part_2()
 print(f"Part 2: {answer2}")
 
-#submit(answer1)
-#submit(answer2)
+# submit(answer1)
+# submit(answer2)

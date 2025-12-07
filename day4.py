@@ -1,4 +1,3 @@
-from aocd import get_data, submit
 from collections import Counter, defaultdict, deque
 from aocd.models import Puzzle
 import copy
@@ -8,7 +7,8 @@ import sys
 import os
 
 # You can import your utility functions, e.g.,
-import aoc_utils
+from aoc_utils import gen_adj_all, list_of_strings_to_list_of_lists_of_chars
+
 
 # Set a higher recursion limit for puzzles that need it
 # sys.setrecursionlimit(2000)
@@ -16,7 +16,7 @@ import aoc_utils
 # --- Solution ---
 
 # Fill these in for the day
-DAY = 1
+DAY = 4
 YEAR = 2025
 
 puzzle = Puzzle(year=YEAR, day=DAY)
@@ -61,11 +61,47 @@ with open(input_file, "r") as f:
 
 
 def part_1():
-    pass
+    total = 0
+    for y in range(len(data)):
+        for x in range(len(data[0])):
+            if (data[y][x] == "@") and (
+                4
+                > sum(
+                    [
+                        1 if data[p[0]][p[1]] == "@" else 0
+                        for p in gen_adj_all(data, (y, x))
+                    ]
+                )
+            ):
+                total += 1
+    return total
 
 
 def part_2():
-    pass
+    chars = list_of_strings_to_list_of_lists_of_chars(data)
+    final_total = 0
+    total = 1
+    while total != 0:
+        total = 0
+        changes = []
+        for y in range(len(chars)):
+            for x in range(len(chars[0])):
+                if (chars[y][x] == "@") and (
+                    4
+                    > sum(
+                        [
+                            1 if chars[p[0]][p[1]] == "@" else 0
+                            for p in gen_adj_all(chars, (y, x))
+                        ]
+                    )
+                ):
+                    total += 1
+                    changes.append((y, x))
+        for p in changes:
+            chars[p[0]][p[1]] = "."
+        final_total += total
+
+    return final_total
 
 
 answer1 = part_1()
