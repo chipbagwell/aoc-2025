@@ -196,3 +196,31 @@ def get_factors(n: int) -> list[int]:
             factors.add(i)
             factors.add(n // i)
     return sorted(list(factors))
+
+
+def show_diff(iter1, iter2, label1="List 1", label2="List 2"):
+    """
+    Compares two iterables and prints the differences in a human-readable format.
+
+    Parameters:
+    iter1: The first iterable.
+    iter2: The second iterable.
+    label1 (str): A label for the first iterable.
+    label2 (str): A label for the second iterable.
+    """
+    set1 = set(iter1)
+    set2 = set(iter2)
+
+    in_1_not_2 = sorted(list(set1 - set2))
+    in_2_not_1 = sorted(list(set2 - set1))
+
+    print(f"--- Differences between '{label1}' and '{label2}' ---")
+    print(f"Length of '{label1}': {len(iter1)}")
+    print(f"Length of '{label2}': {len(iter2)}")
+    if in_1_not_2:
+        print(f"Only in '{label1}': {in_1_not_2}")
+    if in_2_not_1:
+        print(f"Only in '{label2}': {in_2_not_1}")
+    if not in_1_not_2 and not in_2_not_1:
+        print("No differences found.")
+    print("--- End of Differences ---")
