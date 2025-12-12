@@ -224,3 +224,50 @@ def show_diff(iter1, iter2, label1="List 1", label2="List 2"):
     if not in_1_not_2 and not in_2_not_1:
         print("No differences found.")
     print("--- End of Differences ---")
+
+def cache_polygon_check(func):
+    cache = {}
+    def wrapper(point, polygon):
+        # Cache based on point and the object identity of the polygon.
+        # This allows passing an unhashable list as the polygon.
+        # WARNING: This assumes 'polygon' is not modified in place.
+        key = (point, id(polygon))
+        if key not in cache:
+            cache[key] = func(point, polygon)
+        return cache[key]
+    return wrapper
+
+@cache_polygon_check
+def is_point_in_polygon(point: tuple[int, int], polygon: list[tuple[int, int]]) -> bool:
+    """
+    Determines if a point is inside a polygon using the Ray Casting algorithm.
+
+    Parameters:
+    point: tuple (x, y) - The point to check.
+    polygon: list of tuples [(x, y), ...] - The vertices of the polygon.
+
+    Returns:
+    bool: True if inside, False otherwise.
+    """
+    x, y = point
+    inside = False
+    j = len(polygon) - 1
+    for i in range(len(polygon)):
+        xi, yi = polygon[i]
+        xj, yj = polygon[j]
+
+        # Check if point is on the boundary segment
+        # Cross product check for collinearity: (x - xi) * (yj - yi) == (xj - xi) * (y - yi)
+        if (x - xi) * (yj - yi) == (xj - xi) * (y - yi):
+            # Check if point is within the bounds of the segment
+            if min(xi, xj) <= x <= max(xi, xj) and min(yi, yj) <= y <= max(yi, yj):
+                return True
+
+        # Check if the ray intersects the edge
+        # The condition (yi > y) != (yj > y) ensures y is between yi and yj
+        # The second condition checks if the point is to the left of the edge
+        if ((yi > y) != (yj > y)) and \
+           (x < (xj - xi) * (y - yi) / (yj - yi) + xi):
+            inside = not inside
+        j = i
+    return inside
