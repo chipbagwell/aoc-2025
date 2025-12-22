@@ -1,5 +1,6 @@
 from aocd import get_data, submit
 from collections import Counter, defaultdict, deque
+from functools import lru_cache
 from aocd.models import Puzzle
 import copy
 import gc
@@ -7,6 +8,7 @@ import pprint
 import sys
 import os
 import networkx as nx
+import matplotlib as plt
 
 # You can import your utility functions, e.g.,
 import aoc_utils
@@ -72,8 +74,40 @@ def part_1():
     paths = list(nx.all_simple_paths(G, "you", "out"))
     return(len(paths) )
 
+G = nx.DiGraph()
 
+@lru_cache(maxsize=None)
+def count_paths(current_node, target_node):
+    if current_node == target_node:
+        return 1
+    total_paths = 0
+    for next_node in G[current_node]:
+        total_paths += count_paths(next_node, target_node)
+    return total_paths
+    
 def part_2():
+    global G
+    sum = 0
+    nodes = set()
+    for d in data:
+        tokens = d.split()
+        start = tokens[0][:-1]
+        nodes.add(start)
+        ends = tokens[1:]
+        for end in ends:
+            G.add_edge(start, end)
+            nodes.add(end)
+
+    paths_to_fft = count_paths("svr", "fft")
+    paths_to_dac = count_paths("fft", "dac")
+    paths_to_out = count_paths("dac", "out")
+
+    print(f"paths to fft: {paths_to_fft}")
+    print(f"paths to dac: {paths_to_dac}")
+    print(f"paths to out: {paths_to_out}")
+    return paths_to_fft * paths_to_dac * paths_to_out
+
+def part_3():
     sum = 0
     G = nx.DiGraph()
     for d in data:
@@ -82,12 +116,40 @@ def part_2():
         ends = tokens[1:]
         for end in ends:
             G.add_edge(start, end)
-    paths = list(nx.all_simple_paths(G, "fft", "out"))
-    #for p in paths:
-        #if "dac" in p and "fft" in p:
-            #sum += 1
-    #return sum
-    return(len(paths))
+
+    if nx.has_path(G, "svr", "fft"):
+        print("there is a path from svr to fft")
+    else:
+        print("there is no path from svr to fft")
+    if nx.has_path(G, "fft", "dac"):
+        print("there is a path from fft to dac")
+    else:
+        print("there is no path from fft to dac")
+    if nx.has_path(G, "dac", "out"):
+        print("there is a path from dac to out")
+    else:
+        print("there is no path from dac to out")
+
+    paths = deque()
+    paths.append(("svr",))
+    paths_to_fft = 0
+    while paths:
+        path = paths.pop()
+        if(path[-1] == "fft"):
+            print(f"path to fft found: {path}")
+            paths_to_fft +=1
+            continue
+        elif(path[-1] == "dac"):
+            print(f"dropping path to dac before fft")
+            continue
+        elif(path[-1] == "out"):
+            print(f"dropping path to out before fft")
+            continue
+        else:
+            paths.extend(path + (node,) for node in G[path[-1]] if node not in path)
+            print(f"paths len: {len(paths)}")
+    print(f"paths to fft: {paths_to_fft}")
+    pass
 
 
 #answer1 = part_1()
